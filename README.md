@@ -28,6 +28,20 @@ You can expect to reduce the latency of outgoing requests by 2 times the latency
 
 For example if you have a server with a 100ms roundtrip latency, and the endpoint takes 100ms to execute, then you are likely to see a speedup from 400ms to 200ms.
 
+## Benchmarks
+See tests/Benchmark for a simple PHPBench setup that pings github.com/robots.txt 50 times with and without the package. With the package, a prewarmed curl handle is used.
+
+```
++-----------------+------------------------------------+----------+----------+----------+----------+--------+---------+
+| benchmark       | subject                            | memory   | min      | max      | mode     | rstdev | stdev   |
++-----------------+------------------------------------+----------+----------+----------+----------+--------+---------+
+| HttpReusedBench | benchHttpWithReusedCurlHandle ()   | 16.448mb | 25.870ms | 25.870ms | 25.870ms | ±0.00% | 0.000μs |
+| HttpBench       | benchHttpWithoutServiceProvider () | 16.411mb | 76.186ms | 76.186ms | 76.186ms | ±0.00% | 0.000μs |
++-----------------+------------------------------------+----------+----------+----------+----------+--------+---------+
+
+```
+
+
 ## See also
 Aaron Francis has covered this topic in a video on his YouTube channel, where he explains the performance benefits of reusing curl handles in Laravel Octane. You can watch the video here:
 https://www.youtube.com/watch?v=BWAocgJVCbw

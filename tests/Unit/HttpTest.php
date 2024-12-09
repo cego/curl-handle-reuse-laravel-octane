@@ -1,5 +1,7 @@
 <?php
 
+namespace Cego\CurlHandleReuseLaravelOctane\Tests\Unit;
+
 use Orchestra\Testbench\TestCase;
 use Illuminate\Support\Facades\Http;
 use Cego\CurlHandleReuseLaravelOctane\CurlHandleReuseLaravelOctaneServiceProvider;
@@ -33,6 +35,5 @@ class HttpTest extends TestCase
 
         $this->assertEquals(200, $response->status());
         $this->assertEquals(['foo' => 'bar'], $response->json());
-
     }
 }

@@ -8,6 +8,11 @@
             "Cego\\CurlHandleReuseLaravelOctane\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Cego\\CurlHandleReuseLaravelOctane\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Lau Josefsen",
@@ -31,6 +36,7 @@
         "phpunit/phpunit": "^11.5",
         "orchestra/testbench": "^9.6",
         "cego/phpstan": "^4.0",
-        "cego/php-cs-fixer": "^2.0"
+        "cego/php-cs-fixer": "^2.0",
+        "phpbench/phpbench": "^1.3"
     }
 }
