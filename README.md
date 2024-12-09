@@ -20,6 +20,9 @@ You can also use the bound Guzzle handle in other HTTP clients, by resolving `\C
 composer require cego/curl-handle-reuse-laravel-octane
 ```
 
+# Contributing
+Feel free to open issues or pull requests if you have any suggestions or improvements. Remember to run php-cs-fixer, unittests and phpstan before opening a pull request.
+
 # Performance
 You can expect to reduce the latency of outgoing requests by 2 times the latency roundtrip. The speedup factor will depend on the latency of the server you are connecting to, compared to the execution time of the endpoint you are calling.
 
