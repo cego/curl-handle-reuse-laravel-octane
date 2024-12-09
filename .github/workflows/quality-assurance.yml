@@ -1,0 +1,53 @@
+---
+name: lint
+on:
+  push:
+    tags-ignore:
+      - '**'
+    branches:
+      - master
+  pull_request: {}
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [8.2,8.3,8.4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+      - run: composer install
+      - run: ./vendor/bin/phpunit
+
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [8.2,8.3,8.4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+      - run: composer install
+      - run: ./vendor/bin/php-cs-fixer fix --dry-run
+
+  phpstan:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [8.2,8.3,8.4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+      - run: composer install
+      - run: ./vendor/bin/phpstan
+

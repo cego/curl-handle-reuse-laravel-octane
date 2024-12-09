@@ -1,0 +1,9 @@
+/.idea
+*.cache
+/vendor
+/.gitlab-ci-local
+/dev-certs
+/.composer
+auth.json
+phpunit-cobertura-coverage.xml
+phpunit-junit.xml

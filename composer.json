@@ -1,0 +1,36 @@
+{
+    "name": "cego/curl-handle-reuse-laravel-octane",
+    "description": "Utility for convenient usage of singleton curl handles using Laravel HTTP facade",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Cego\\CurlHandleReuseLaravelOctane\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lau Josefsen",
+            "email": "lejo@cego.dk"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.2",
+        "illuminate/http": "^10.0|^11.0",
+        "illuminate/support": "^10.0|^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cego\\CurlHandleReuseLaravelOctane\\CurlHandleReuseLaravelOctaneServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "orchestra/testbench": "^9.6",
+        "cego/phpstan": "^4.0",
+        "cego/php-cs-fixer": "^2.0"
+    }
+}
