@@ -10,7 +10,9 @@ The TLS handshake can be a big performance penalty for applications that strive 
 
 This package, by default, replaces the bind for the Http facade, to use the same curl handle for all outgoing requests.
 
-It works by binding a Guzzle handle in the service container as a singleton. To reuse across requests, worker mode must be used, such as in Laravel Octane.
+It works by binding a Guzzle handle in the service container as a "true"-singleton. To reuse across requests, worker mode must be used, such as in Laravel Octane. 
+
+It then automatically rebinds the Http facade to automatically use this singleton, so you don't have to change your code. It is a minimally invasive change to the Http client, and no code changes should be required to use it.
 
 You can also use the bound Guzzle handle in other HTTP clients, by resolving `\Cego\CurlHandleReuseLaravelOctane\ReusedCurlHandle::class` from the service container.
 
