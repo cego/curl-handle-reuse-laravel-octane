@@ -2,13 +2,10 @@
 
 namespace Cego\CurlHandleReuseLaravelOctane\Tests\Benchmark;
 
-use Cego\CurlHandleReuseLaravelOctane\CurlHandleReuseLaravelOctaneServiceProvider;
-use Illuminate\Support\Facades\Http;
-use Orchestra\Testbench\Concerns\CreatesApplication;
-use Orchestra\Testbench\TestCase;
-use PhpBench\Attributes\BeforeClassMethods;
-use PhpBench\Attributes\BeforeMethods;
 use PhpBench\Attributes\Revs;
+use Illuminate\Support\Facades\Http;
+use PhpBench\Attributes\BeforeMethods;
+use Orchestra\Testbench\Concerns\CreatesApplication;
 
 class HttpBench
 {
