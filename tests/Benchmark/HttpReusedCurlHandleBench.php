@@ -35,13 +35,13 @@ class HttpReusedCurlHandleBench
     #[BeforeMethods('prewarm'), Revs(50)]
     public function benchHttpWithoutReusedCurlHandle()
     {
-        Http::get('https://ventraip.com.au/robots.txt');
+        Http::get('https://github.com/robots.txt');
     }
 
     #[BeforeMethods('prewarmWithServiceProvider'), Revs(50)]
     public function benchHttpWithReusedCurlHandle()
     {
-        Http::get('https://ventraip.com.au/robots.txt');
+        Http::get('https://github.com/robots.txt');
     }
 
     #[BeforeMethods('prewarmWithServiceProvider'), Revs(50)]
