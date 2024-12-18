@@ -23,7 +23,8 @@
     "require": {
         "php": "^8.2",
         "illuminate/http": "^10.0|^11.0",
-        "illuminate/support": "^10.0|^11.0"
+        "illuminate/support": "^10.0|^11.0",
+        "ext-curl": "*"
     },
     "extra": {
         "laravel": {
