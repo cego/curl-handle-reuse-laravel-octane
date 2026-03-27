@@ -2,65 +2,82 @@
 
 namespace Cego\CurlHandleReuseLaravelOctane;
 
-use GuzzleHttp\Utils;
-use GuzzleHttp\Handler\Proxy;
+use Closure;
 use GuzzleHttp\Handler\CurlFactory;
 use GuzzleHttp\Handler\CurlHandler;
-use GuzzleHttp\Handler\StreamHandler;
-use Psr\Http\Message\RequestInterface;
 use GuzzleHttp\Handler\CurlMultiHandler;
+use GuzzleHttp\Handler\Proxy;
+use GuzzleHttp\Handler\StreamHandler;
 use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Message\RequestInterface;
 
 class ReusedCurlHandle
 {
-    /** @var callable(RequestInterface, array<array-key, mixed>): PromiseInterface */
-    private $defaultHandler;
+    private readonly Closure $handler;
 
-    public function __construct(
-        int $maxHandles
-    ) {
-        $this->defaultHandler = self::chooseHandler($maxHandles);
+    public function __construct(int $maxHandles)
+    {
+        $this->handler = Closure::fromCallable(self::chooseHandler($maxHandles));
     }
 
-    /**
-     * @see Utils::chooseHandler()
-     * It is a copy of the original method, besides adding the max handles config for the CurlFactory, CurlMultiHandler does not have a limit per default https://curl.se/libcurl/c/CURLMOPT_MAX_TOTAL_CONNECTIONS.html
-     */
     protected static function chooseHandler(int $maxHandles): callable
     {
-        $handler = null;
-
-        $curlVersion = \function_exists('curl_version') ? curl_version() : false;
-
-        if (\defined('CURLOPT_CUSTOMREQUEST') && is_array($curlVersion) && is_string($curlVersion['version']) && version_compare($curlVersion['version'], '7.21.2') >= 0) {
-            if (\function_exists('curl_multi_exec') && \function_exists('curl_exec')) {
-                $handler = Proxy::wrapSync(new CurlMultiHandler(['handle_factory' => new CurlFactory($maxHandles)]), new CurlHandler(['handle_factory' => new CurlFactory($maxHandles)]));
-            } elseif (\function_exists('curl_exec')) {
-                $handler = new CurlHandler(['handle_factory' => new CurlFactory($maxHandles)]);
-            } elseif (\function_exists('curl_multi_exec')) {
-                $handler = new CurlMultiHandler(['handle_factory' => new CurlFactory($maxHandles)]);
-            }
-        }
+        $handler = self::chooseCurlHandler($maxHandles);
 
         if (\ini_get('allow_url_fopen')) {
-            $handler = $handler
+            return $handler !== null
                 ? Proxy::wrapStreaming($handler, new StreamHandler())
                 : new StreamHandler();
-        } elseif ( ! $handler) {
-            throw new \RuntimeException('GuzzleHttp requires cURL, the allow_url_fopen ini setting, or a custom HTTP handler.');
         }
 
-        return $handler;
+        return $handler ?? throw new \RuntimeException(
+            'GuzzleHttp requires cURL, the allow_url_fopen ini setting, or a custom HTTP handler.'
+        );
+    }
+
+    private static function chooseCurlHandler(int $maxHandles): ?callable
+    {
+        if (! self::supportsCurl()) {
+            return null;
+        }
+
+        if (\function_exists('curl_multi_exec') && \function_exists('curl_exec')) {
+            return Proxy::wrapSync(
+                new CurlMultiHandler(['handle_factory' => new CurlFactory($maxHandles)]),
+                new CurlHandler(['handle_factory' => new CurlFactory($maxHandles)]),
+            );
+        }
+
+        if (\function_exists('curl_exec')) {
+            return new CurlHandler(['handle_factory' => new CurlFactory($maxHandles)]);
+        }
+
+        if (\function_exists('curl_multi_exec')) {
+            return new CurlMultiHandler(['handle_factory' => new CurlFactory($maxHandles)]);
+        }
+
+        return null;
+    }
+
+    private static function supportsCurl(): bool
+    {
+        if (! \defined('CURLOPT_CUSTOMREQUEST') || ! \function_exists('curl_version')) {
+            return false;
+        }
+
+        $curlVersion = \curl_version();
+
+        return \is_array($curlVersion)
+            && \is_string($curlVersion['version'] ?? null)
+            && \version_compare($curlVersion['version'], '7.21.2') >= 0;
     }
 
     /**
-     * @param RequestInterface $request
      * @param array<array-key, mixed> $options
-     *
-     * @return PromiseInterface
      */
-    public function __invoke(RequestInterface $request, array $options)
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
-        return call_user_func($this->defaultHandler, $request, $options);
+        /** @var PromiseInterface */
+        return ($this->handler)($request, $options);
     }
 }
