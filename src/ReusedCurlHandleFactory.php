@@ -2,15 +2,15 @@
 
 namespace Cego\CurlHandleReuseLaravelOctane;
 
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class ReusedCurlHandleFactory extends Factory
 {
     public function __construct(
         protected readonly ReusedCurlHandle $reusedCurlHandle,
-        ?Dispatcher $dispatcher = null,
+        ?Dispatcher                         $dispatcher = null,
     ) {
         parent::__construct($dispatcher);
     }

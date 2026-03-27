@@ -3,13 +3,13 @@
 namespace Cego\CurlHandleReuseLaravelOctane;
 
 use Closure;
+use GuzzleHttp\Handler\Proxy;
 use GuzzleHttp\Handler\CurlFactory;
 use GuzzleHttp\Handler\CurlHandler;
-use GuzzleHttp\Handler\CurlMultiHandler;
-use GuzzleHttp\Handler\Proxy;
 use GuzzleHttp\Handler\StreamHandler;
-use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
+use GuzzleHttp\Handler\CurlMultiHandler;
+use GuzzleHttp\Promise\PromiseInterface;
 
 class ReusedCurlHandle
 {
@@ -37,7 +37,7 @@ class ReusedCurlHandle
 
     private static function chooseCurlHandler(int $maxHandles): ?callable
     {
-        if (! self::supportsCurl()) {
+        if ( ! self::supportsCurl()) {
             return null;
         }
 
@@ -61,7 +61,7 @@ class ReusedCurlHandle
 
     private static function supportsCurl(): bool
     {
-        if (! \defined('CURLOPT_CUSTOMREQUEST') || ! \function_exists('curl_version')) {
+        if ( ! \defined('CURLOPT_CUSTOMREQUEST') || ! \function_exists('curl_version')) {
             return false;
         }
 
