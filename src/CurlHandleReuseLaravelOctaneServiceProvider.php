@@ -11,7 +11,7 @@ class CurlHandleReuseLaravelOctaneServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/curl-handle-reuse-laravel-octane.php', 'curl-handle-reuse-laravel-octane');
 
-        $this->app->singleton(ReusedCurlHandle::class, fn () => new ReusedCurlHandle(
+        $this->app->instance(ReusedCurlHandle::class, new ReusedCurlHandle(
             config()->integer('curl-handle-reuse-laravel-octane.max_handles', 50),
         ));
 
