@@ -13,6 +13,7 @@ class CurlHandleReuseLaravelOctaneServiceProvider extends ServiceProvider
 
         $this->app->instance(ReusedCurlHandle::class, new ReusedCurlHandle(
             config()->integer('curl-handle-reuse-laravel-octane.max_handles', 50),
+            config()->integer('curl-handle-reuse-laravel-octane.max_seconds_per_connection', 60),
         ));
 
         $this->app->bind(Factory::class, ReusedCurlHandleFactory::class);

@@ -16,6 +16,8 @@ It then automatically rebinds the Http facade to automatically use this singleto
 
 You can also use the bound Guzzle handle in other HTTP clients, by resolving `\Cego\CurlHandleReuseLaravelOctane\ReusedCurlHandle::class` from the service container.
 
+Reused connections are retired after `REUSED_CURL_HANDLE_MAX_SECONDS_PER_CONNECTION` seconds (default 60), so long-lived workers reconnect and spread their requests across the backends behind a load-balanced address instead of staying pinned to the ones they first reached.
+
 # Installation
 
 ```bash

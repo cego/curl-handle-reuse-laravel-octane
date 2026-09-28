@@ -15,7 +15,7 @@ class ReusedCurlHandle
 {
     private readonly Closure $handler;
 
-    public function __construct(int $maxHandles)
+    public function __construct(int $maxHandles, private readonly int $maxSecondsPerConnection)
     {
         $this->handler = Closure::fromCallable(self::chooseHandler($maxHandles));
     }
@@ -77,6 +77,9 @@ class ReusedCurlHandle
      */
     public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
+        $curlOptions = \is_array($options['curl'] ?? null) ? $options['curl'] : [];
+        $options['curl'] = $curlOptions + [CURLOPT_MAXLIFETIME_CONN => $this->maxSecondsPerConnection];
+
         /** @var PromiseInterface */
         return ($this->handler)($request, $options);
     }
