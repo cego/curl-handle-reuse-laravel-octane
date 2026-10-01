@@ -77,6 +77,16 @@ class ReusedCurlHandle
      */
     public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
+        $uri = $request->getUri();
+
+        if ($uri->getScheme() === 'http') {
+            $port = $uri->getPort() ?? 80;
+            $slotHost = \sprintf('slot%d.%s', \random_int(1, 5), $uri->getHost());
+            $curlOptions = \is_array($options['curl'] ?? null) ? $options['curl'] : [];
+            $options['curl'] = [CURLOPT_CONNECT_TO => [\sprintf('%s:%d:%s:%d', $slotHost, $port, $uri->getHost(), $port)]] + $curlOptions;
+            $request = $request->withUri($uri->withHost($slotHost), true);
+        }
+
         /** @var PromiseInterface */
         return ($this->handler)($request, $options);
     }
